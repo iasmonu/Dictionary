@@ -1,0 +1,213 @@
+Overview of the dictionary
+
+
+Algorithm:
+
+
+1: interface  2: write word and get the meaning(develop word matching)
+3: modify to get o/p in any case of input either capital or lowercase
+
+where to get the file:
+for making the interface:
+we have the json file with all dictionary words: dictionary_data.json
+
+a: load the dictionary file and open it 
+import json
+data = json.load(open("dictionary_data.jason"))
+
+#check whether the data is loaded or not
+#using key to print the value from dictionary
+
+print(data["smog"])  op: ['Air pollution consisting of smoke and fog.']
+
+
+
+
+Main logic(2and 3)
+we need to take user input in form of word
+
+word = input("enter the word to be searched")
+output = translate(word)
+print(output)
+
+
+#buildinng the translate function
+def translate(word):
+	if word in data:
+		return data[word]
+
+
+3:modifications for uppercase and lowercase input and words not in dictionary
+
+#when word not exist
+def translate(word):
+	if word in data:
+		return data[word]
+	else:
+		print("sorry! we dont have the answer")
+
+word = input("enter the word to be searched")
+output = translate(word)
+print(output)
+
+
+--------------------------Problems----------------------------------
+
+when u search Tamil it will show answer but not when u search tamil
+problem 1: title
+def translate(word):
+    if word in data :
+        return(data[word])
+    elif word.title() in data:
+
+
+when u search USA it will show answer but not on searching usa
+
+problem2: capitalize
+
+def translate(word):
+    word = word.lower()#90% pwrds are in lowercase
+    if word in data :
+        return(data[word])
+    elif word.title() in data: #for the case of Tamil and tamil
+        return(data[word.title()])
+    elif word.upper() in data: #for the case of usa and USA
+        return(data[word.upper()])
+    else:
+        print("sorry! we dont have the answer")
+
+
+
+--------- FINAL CODE---------
+import json
+data = json.load(open("dictionary_data.json"))
+
+#building translate function
+def translate(word):
+    word = word.lower()#90% pwrds are in lowercase
+    if word in data :
+        return(data[word])
+    elif word.title() in data: #for the case of Tamil and tamil
+        return(data[word.title()])
+    elif word.upper() in data: #for the case of usa and USA
+        return(data[word.upper()])
+    else:
+        print("sorry! we dont have the answer")
+#main loic or driver code
+word = input("enter the word to be searched")
+
+output = translate(word)
+print(output)
+
+
+
+------------what about interface-----------
+what the interface means:
+suppose something has 2 meanings
+in normal case it will show output for paper as:
+['Felted or matted sheets of cellulose fibers, formed on a fine-wir
+e screen from a dilute water suspension, and bonded together as the
+ water is removed and the sheet is dried.', 'Made of paper.', 'A sc
+holarly written work describing the results of observations or stat
+ing hypotheses.']
+
+
+we want different meanings to be shown in different lines
+this is all about improving the interface:
+
+output = translate(word)
+#for a better interface
+#check if no of output is more than 1
+if type(output) == list:
+    #print line by line
+    for item in output:
+        print(item)
+else:
+    print(output)
+
+
+
+--------------------------final program-----------
+import json
+data = json.load(open("dictionary_data.json"))
+
+#building translate function
+def translate(word):
+    word = word.lower()#90% pwrds are in lowercase
+    if word in data :
+        return(data[word])
+    elif word.title() in data: #for the case of Tamil and tamil
+        return(data[word.title()])
+    elif word.upper() in data: #for the case of usa and USA
+        return(data[word.upper()])
+    else:
+        print("sorry! we dont have the answer")
+#main loic or driver code
+word = input("enter the word to be searched: ")
+
+output = translate(word)
+#for a better interface
+#check if no of output is more than 1
+if type(output) == list:
+    #print line by line
+    for item in output:
+        print(item)
+else:
+    print(output)
+
+
+---------------------Problems persisted---------
+
+
+
+
+when searching close matched words we get errors:
+for example: search friut 
+	     we have misspelt the fruit as friut 
+	     or
+	     search mangoe 
+	     we have misspelt the mango as mangoe
+we need to give correct results for these close matching words
+
+searching in google:getting close matching in python for strings
+
+
+wWE GET ::::::: getclosematches function fromm the diflib module
+
+it gives closest matching for a string
+how to use:
+
+import diflib
+print (diflib.get_close_matches["abc",["abcd","abcde","abcdef"])   )
+abc is the one whose close match is to be found
+["abcd","abcde","abcdef"] is the dictionary from where we want to get the closest match
+
+op= abcd
+
+
+--editing the program
+adding another elif condition for close match
+
+
+def translate(word):
+    word = word.lower()#90% pwrds are in lowercase
+    if word in data :
+        return(data[word])
+    elif word.title() in data: #for the case of Tamil and tamil
+        return(data[word.title()])
+    elif word.upper() in data: #for the case of usa and USA
+        return(data[word.upper()])
+    elif len(get_close_matches(word , data.keys())) > 0 :
+        print("did you mean %s instead" %get_close_matches(word, data.keys())[0])
+        decide = input("press y for yes or n for no")
+        if decide == "y":
+            return data[get_close_matches(word , data.keys())[0]]
+        elif decide == "n":
+            return("pugger your paw steps on wrong keys ")
+        else:
+            return("You have entered wrong input please enter just y or n")
+    else:
+        print("sorry! we dont have the answer")
+
+
+
